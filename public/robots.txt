@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://panel.lab.mdajam.com/sitemap.xml

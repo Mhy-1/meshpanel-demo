@@ -1,0 +1,42 @@
+/* System Status Card */
+.system_status_card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg, 12px) !important;
+  box-shadow: var(--shadow-sm);
+  height: 100%;
+}
+
+.system_status_header {
+  margin-bottom: var(--space-4, 16px);
+}
+
+.system_status_title {
+  font-weight: 600 !important;
+  color: var(--text-primary);
+}
+
+.system_status_subtitle {
+  color: var(--text-secondary) !important;
+  margin-top: var(--space-1, 4px) !important;
+}
+
+.system_status_list {
+  padding: 0 !important;
+}
+
+.system_status_item {
+  padding: var(--space-2, 8px) 0 !important;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.system_status_item:last-child {
+  border-bottom: none;
+}
+
+.system_status_footer {
+  margin-top: var(--space-4, 16px);
+  padding-top: var(--space-3, 12px);
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+}

@@ -1,0 +1,67 @@
+/* Recent Activity Card */
+.recent_activity_card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg, 12px) !important;
+  box-shadow: var(--shadow-sm);
+  height: 100%;
+}
+
+.recent_activity_header {
+  margin-bottom: var(--space-4, 16px);
+}
+
+.recent_activity_title {
+  font-weight: 600 !important;
+  color: var(--text-primary);
+  margin-bottom: var(--space-1, 4px) !important;
+}
+
+.recent_activity_subtitle {
+  color: var(--text-secondary) !important;
+}
+
+.recent_activity_list {
+  padding: 0 !important;
+}
+
+.recent_activity_item {
+  padding: var(--space-2, 8px) 0 !important;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.recent_activity_item:last-child {
+  border-bottom: none;
+}
+
+.recent_activity_icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md, 8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recent_activity_text {
+  font-weight: 500 !important;
+  color: var(--text-primary);
+}
+
+.recent_activity_loading,
+.recent_activity_empty {
+  padding: var(--space-6, 24px);
+  text-align: center;
+}
+
+/* Animation */
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
