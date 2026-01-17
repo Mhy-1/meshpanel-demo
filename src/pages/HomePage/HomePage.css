@@ -1,0 +1,32 @@
+/* HomePage Styles */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6, 24px);
+  padding: var(--space-4, 16px);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.home-analytics-section {
+  margin-top: var(--space-4, 16px);
+}
+
+.home-activity-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6, 24px);
+  margin-top: var(--space-4, 16px);
+}
+
+@media (max-width: 1024px) {
+  .home-activity-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-container {
+    padding: var(--space-3, 12px);
+    gap: var(--space-4, 16px);
+  }
+}

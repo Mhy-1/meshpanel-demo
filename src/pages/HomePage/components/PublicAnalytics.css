@@ -1,0 +1,19 @@
+/* Analytics Container */
+.analytics-container {
+  margin-top: var(--space-4, 16px);
+}
+
+/* Metric Card */
+.metric-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg, 12px) !important;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.metric-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-color-strong);
+  transform: translateY(-2px);
+}
