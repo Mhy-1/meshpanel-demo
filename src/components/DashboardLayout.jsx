@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import Footer from './Footer';
 import {
   Box,
   Drawer,
@@ -20,7 +21,6 @@ import {
   useMediaQuery,
   Fab,
   Toolbar,
-  AppBar,
   Chip,
 } from '@mui/material';
 import { useTheme as useMuiTheme } from '@mui/material/styles';
@@ -44,11 +44,11 @@ const DRAWER_WIDTH = 260;
 const DRAWER_COLLAPSED_WIDTH = 72;
 
 const menuItems = [
-  { path: '/dashboard', icon: DashboardIcon, text: 'Dashboard' },
-  { path: '/portfolio', icon: PersonIcon, text: 'Portfolio' },
-  { path: '/users', icon: PeopleIcon, text: 'Users' },
-  { path: '/analytics', icon: AnalyticsIcon, text: 'Analytics' },
-  { path: '/audit-logs', icon: HistoryIcon, text: 'Audit Logs' },
+  { path: '/dashboard', icon: DashboardIcon, text: 'لوحة التحكم' },
+  { path: '/portfolio', icon: PersonIcon, text: 'الملف الشخصي' },
+  { path: '/users', icon: PeopleIcon, text: 'المستخدمون' },
+  { path: '/analytics', icon: AnalyticsIcon, text: 'التحليلات' },
+  { path: '/audit-logs', icon: HistoryIcon, text: 'سجل المراجعة' },
 ];
 
 const DashboardLayout = () => {
@@ -62,9 +62,9 @@ const DashboardLayout = () => {
 
   // Demo user data
   const demoUser = {
-    name: 'John Doe',
+    name: 'مشاري دعجم',
     email: 'demo@meshpanel.com',
-    role: 'Admin',
+    role: 'مدير',
   };
 
   const toggleDrawer = useCallback(() => {
@@ -87,6 +87,7 @@ const DashboardLayout = () => {
       {/* Sidebar */}
       <Drawer
         variant={isMobile ? 'temporary' : 'permanent'}
+        anchor="right"
         open={isMobile ? drawerOpen : true}
         onClose={isMobile ? toggleDrawer : undefined}
         aria-label="Main navigation"
@@ -99,7 +100,7 @@ const DashboardLayout = () => {
             overflowX: 'hidden',
             transition: 'width 200ms ease',
             backgroundColor: 'background.paper',
-            borderRight: '1px solid',
+            borderInlineStart: '1px solid',
             borderColor: 'divider',
           },
         }}
@@ -129,7 +130,7 @@ const DashboardLayout = () => {
                 MeshPanel
               </Typography>
               <Chip
-                label="Demo"
+                label="تجريبي"
                 size="small"
                 sx={{
                   height: 20,
@@ -144,7 +145,7 @@ const DashboardLayout = () => {
           <IconButton
             onClick={toggleDrawer}
             size="small"
-            aria-label={drawerOpen ? 'Collapse navigation' : 'Expand navigation'}
+            aria-label={drawerOpen ? 'طي القائمة' : 'توسيع القائمة'}
             sx={{
               color: 'text.secondary',
               '&:hover': {
@@ -211,20 +212,20 @@ const DashboardLayout = () => {
 
               {/* Action Buttons */}
               <Box sx={{ display: 'flex', gap: 0.5, mt: 1.5, justifyContent: 'center' }}>
-                <Tooltip title="View Profile" placement="bottom">
+                <Tooltip title="عرض الملف الشخصي" placement="bottom">
                   <IconButton
                     size="small"
                     onClick={() => navigate('/portfolio')}
-                    aria-label="View profile"
+                    aria-label="عرض الملف الشخصي"
                     sx={{ color: 'text.secondary' }}
                   >
                     <AccountCircleIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
-                <Tooltip title="3 unread notifications" placement="bottom">
+                <Tooltip title="3 إشعارات غير مقروءة" placement="bottom">
                   <IconButton
                     size="small"
-                    aria-label="View notifications - 3 unread"
+                    aria-label="عرض الإشعارات - 3 غير مقروءة"
                     sx={{ color: 'text.secondary' }}
                   >
                     <Badge badgeContent={3} color="error" max={99}>
@@ -232,11 +233,11 @@ const DashboardLayout = () => {
                     </Badge>
                   </IconButton>
                 </Tooltip>
-                <Tooltip title={isDark ? 'Light Mode' : 'Dark Mode'} placement="bottom">
+                <Tooltip title={isDark ? 'الوضع الفاتح' : 'الوضع الداكن'} placement="bottom">
                   <IconButton
                     size="small"
                     onClick={toggleTheme}
-                    aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                    aria-label={isDark ? 'التبديل للوضع الفاتح' : 'التبديل للوضع الداكن'}
                     sx={{ color: 'text.secondary' }}
                   >
                     {isDark ? (
@@ -284,12 +285,12 @@ const DashboardLayout = () => {
                       ? {
                           content: '""',
                           position: 'absolute',
-                          left: 0,
+                          right: 0,
                           top: '50%',
                           transform: 'translateY(-50%)',
                           width: 3,
                           height: '60%',
-                          borderRadius: '0 2px 2px 0',
+                          borderRadius: '2px 0 0 2px',
                           backgroundColor: 'primary.main',
                         }
                       : {},
@@ -333,7 +334,7 @@ const DashboardLayout = () => {
                 size="small"
                 sx={{
                   mb: 1,
-                  justifyContent: 'flex-start',
+                  justifyContent: 'flex-end',
                   color: 'text.secondary',
                   borderColor: 'divider',
                   '&:hover': {
@@ -342,7 +343,7 @@ const DashboardLayout = () => {
                   },
                 }}
               >
-                View on GitHub
+                عرض على GitHub
               </Button>
               <Typography
                 variant="caption"
@@ -353,17 +354,17 @@ const DashboardLayout = () => {
                   mt: 1,
                 }}
               >
-                Demo Version 1.0
+                النسخة التجريبية 1.0
               </Typography>
             </>
           ) : (
-            <Tooltip title="View on GitHub" placement="right">
+            <Tooltip title="عرض على GitHub" placement="left">
               <IconButton
                 href="https://github.com/msharyjam/meshpanel-demo"
                 target="_blank"
                 rel="noopener noreferrer"
                 size="small"
-                aria-label="View on GitHub"
+                aria-label="عرض على GitHub"
                 sx={{
                   color: 'text.secondary',
                   width: '100%',
@@ -384,12 +385,12 @@ const DashboardLayout = () => {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleProfileMenuClose}
-        transformOrigin={{ horizontal: 'left', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
         PaperProps={{
           sx: {
             mt: 0.5,
-            ml: 1,
+            me: 1,
             minWidth: 180,
           },
         }}
@@ -400,17 +401,17 @@ const DashboardLayout = () => {
             navigate('/portfolio');
           }}
         >
-          <AccountCircleIcon fontSize="small" sx={{ mr: 1.5, color: 'text.secondary' }} />
-          Profile
+          <AccountCircleIcon fontSize="small" sx={{ me: 1.5, color: 'text.secondary' }} />
+          الملف الشخصي
         </MenuItem>
         <MenuItem onClick={handleProfileMenuClose}>
-          <SettingsIcon fontSize="small" sx={{ mr: 1.5, color: 'text.secondary' }} />
-          Settings
+          <SettingsIcon fontSize="small" sx={{ me: 1.5, color: 'text.secondary' }} />
+          الإعدادات
         </MenuItem>
         <Divider />
         <MenuItem sx={{ color: 'text.secondary' }}>
-          <LogoutIcon fontSize="small" sx={{ mr: 1.5 }} />
-          Sign Out (Demo)
+          <LogoutIcon fontSize="small" sx={{ me: 1.5 }} />
+          تسجيل الخروج (تجريبي)
         </MenuItem>
       </Menu>
 
@@ -418,7 +419,7 @@ const DashboardLayout = () => {
       {isMobile && !drawerOpen && (
         <Fab
           color="primary"
-          aria-label="Open menu"
+          aria-label="فتح القائمة"
           onClick={toggleDrawer}
           size="small"
           sx={{
@@ -440,16 +441,27 @@ const DashboardLayout = () => {
       {/* Main Content */}
       <Box
         component="main"
+        id="main-content"
+        tabIndex={-1}
+        role="main"
+        aria-label="المحتوى الرئيسي"
         sx={{
           flexGrow: 1,
-          p: 3,
+          display: 'flex',
+          flexDirection: 'column',
           width: { md: `calc(100% - ${currentWidth}px)` },
           minHeight: '100vh',
           backgroundColor: 'background.default',
           transition: 'width 200ms ease',
+          '&:focus': {
+            outline: 'none',
+          },
         }}
       >
-        <Outlet />
+        <Box sx={{ flexGrow: 1, p: 3 }}>
+          <Outlet />
+        </Box>
+        <Footer />
       </Box>
     </Box>
   );

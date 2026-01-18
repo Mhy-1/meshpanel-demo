@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  Box, Typography, Card, CardContent, Table, TableBody, TableCell,
+  Box, Typography, Card, Table, TableBody, TableCell,
   TableContainer, TableHead, TableRow, Avatar, Chip, IconButton,
   Button, TextField, InputAdornment, Menu, MenuItem, Tooltip
 } from '@mui/material';
@@ -12,6 +12,7 @@ import {
   Delete as DeleteIcon,
   Block as BlockIcon,
   FilterList as FilterIcon,
+  PersonOff as PersonOffIcon,
 } from '@mui/icons-material';
 import { usersData } from '../data/mockData';
 
@@ -41,11 +42,15 @@ const UsersPage = () => {
     return status === 'active' ? 'success' : 'default';
   };
 
+  const getStatusLabel = (status) => {
+    return status === 'active' ? 'نشط' : 'غير نشط';
+  };
+
   const getRoleColor = (role) => {
-    switch (role.toLowerCase()) {
-      case 'admin':
+    switch (role) {
+      case 'مدير':
         return { bg: 'error.light', color: 'error.dark' };
-      case 'editor':
+      case 'محرر':
         return { bg: 'primary.light', color: 'primary.dark' };
       default:
         return { bg: 'action.selected', color: 'text.secondary' };
@@ -53,44 +58,51 @@ const UsersPage = () => {
   };
 
   const formatLastActive = (date) => {
-    if (!date) return 'Never';
+    if (!date) return 'أبداً';
     const now = new Date();
     const diff = now - date;
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(diff / 3600000);
     const days = Math.floor(diff / 86400000);
 
-    if (minutes < 1) return 'Just now';
-    if (minutes < 60) return `${minutes}m ago`;
-    if (hours < 24) return `${hours}h ago`;
-    return `${days}d ago`;
+    if (minutes < 1) return 'الآن';
+    if (minutes < 60) return `منذ ${minutes} دقيقة`;
+    if (hours < 24) return `منذ ${hours} ساعة`;
+    return `منذ ${days} يوم`;
   };
 
   return (
     <Box>
       {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: { xs: 'flex-start', sm: 'center' },
+        flexDirection: { xs: 'column', sm: 'row' },
+        gap: 2,
+        mb: 4
+      }}>
         <Box>
-          <Typography variant="h4" sx={{ fontWeight: 700, color: 'text.primary' }}>
-            User Management
+          <Typography variant="h4" sx={{ fontWeight: 700, color: 'text.primary', fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>
+            إدارة المستخدمين
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
-            Manage team members and their permissions
+            إدارة أعضاء الفريق وصلاحياتهم
           </Typography>
         </Box>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          sx={{ textTransform: 'none', fontWeight: 600 }}
+          sx={{ textTransform: 'none', fontWeight: 600, width: { xs: '100%', sm: 'auto' } }}
         >
-          Add User
+          إضافة مستخدم
         </Button>
       </Box>
 
       {/* Filters & Search */}
-      <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 3 }}>
         <TextField
-          placeholder="Search users..."
+          placeholder="البحث عن مستخدمين..."
           size="small"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -101,14 +113,14 @@ const UsersPage = () => {
               </InputAdornment>
             ),
           }}
-          sx={{ width: 300 }}
+          sx={{ width: { xs: '100%', sm: 300 } }}
         />
         <Button
           variant="outlined"
           startIcon={<FilterIcon />}
-          sx={{ textTransform: 'none' }}
+          sx={{ textTransform: 'none', flexShrink: 0 }}
         >
-          Filters
+          الفلاتر
         </Button>
       </Box>
 
@@ -122,20 +134,44 @@ const UsersPage = () => {
         }}
       >
         <TableContainer>
-          <Table>
+          <Table aria-label="جدول المستخدمين">
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>User</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>Role</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>Department</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>Status</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>Last Active</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>Joined</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 600, color: 'text.secondary' }}>Actions</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>المستخدم</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>الدور</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>القسم</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>الحالة</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>آخر نشاط</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>تاريخ الانضمام</TableCell>
+                <TableCell align="left" sx={{ fontWeight: 600, color: 'text.secondary' }}>الإجراءات</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredUsers.map((user) => {
+              {filteredUsers.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        py: 6,
+                        color: 'text.secondary',
+                      }}
+                    >
+                      <PersonOffIcon sx={{ fontSize: 48, mb: 2, opacity: 0.5 }} />
+                      <Typography variant="h6" sx={{ fontWeight: 500, mb: 1 }}>
+                        لا توجد نتائج
+                      </Typography>
+                      <Typography variant="body2">
+                        جرب البحث بكلمات مختلفة أو تعديل الفلاتر
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredUsers.map((user) => {
                 const roleColors = getRoleColor(user.role);
                 return (
                   <TableRow
@@ -186,7 +222,7 @@ const UsersPage = () => {
                     </TableCell>
                     <TableCell>
                       <Chip
-                        label={user.status}
+                        label={getStatusLabel(user.status)}
                         size="small"
                         color={getStatusColor(user.status)}
                         sx={{ fontWeight: 500, fontSize: '0.75rem', textTransform: 'capitalize' }}
@@ -199,14 +235,16 @@ const UsersPage = () => {
                     </TableCell>
                     <TableCell>
                       <Typography variant="body2" color="text.secondary">
-                        {user.joinDate.toLocaleDateString()}
+                        {user.joinDate.toLocaleDateString('ar-SA')}
                       </Typography>
                     </TableCell>
-                    <TableCell align="right">
-                      <Tooltip title="Actions">
+                    <TableCell align="left">
+                      <Tooltip title="الإجراءات">
                         <IconButton
                           size="small"
                           onClick={(e) => handleMenuOpen(e, user)}
+                          aria-label={`إجراءات للمستخدم ${user.name}`}
+                          aria-haspopup="true"
                         >
                           <MoreVertIcon fontSize="small" />
                         </IconButton>
@@ -214,7 +252,8 @@ const UsersPage = () => {
                     </TableCell>
                   </TableRow>
                 );
-              })}
+              })
+              )}
             </TableBody>
           </Table>
         </TableContainer>
@@ -225,33 +264,33 @@ const UsersPage = () => {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
       >
         <MenuItem onClick={handleMenuClose}>
-          <EditIcon fontSize="small" sx={{ mr: 1.5, color: 'text.secondary' }} />
-          Edit User
+          <EditIcon fontSize="small" sx={{ me: 1.5, color: 'text.secondary' }} />
+          تعديل المستخدم
         </MenuItem>
         <MenuItem onClick={handleMenuClose}>
-          <BlockIcon fontSize="small" sx={{ mr: 1.5, color: 'text.secondary' }} />
-          {selectedUser?.status === 'active' ? 'Deactivate' : 'Activate'}
+          <BlockIcon fontSize="small" sx={{ me: 1.5, color: 'text.secondary' }} />
+          {selectedUser?.status === 'active' ? 'تعطيل' : 'تفعيل'}
         </MenuItem>
         <MenuItem onClick={handleMenuClose} sx={{ color: 'error.main' }}>
-          <DeleteIcon fontSize="small" sx={{ mr: 1.5 }} />
-          Delete User
+          <DeleteIcon fontSize="small" sx={{ me: 1.5 }} />
+          حذف المستخدم
         </MenuItem>
       </Menu>
 
       {/* Summary */}
       <Box sx={{ display: 'flex', gap: 3, mt: 3 }}>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Showing <strong>{filteredUsers.length}</strong> of <strong>{usersData.length}</strong> users
+          عرض <strong>{filteredUsers.length}</strong> من <strong>{usersData.length}</strong> مستخدم
         </Typography>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          <strong>{usersData.filter(u => u.status === 'active').length}</strong> active
+          <strong>{usersData.filter(u => u.status === 'active').length}</strong> نشط
         </Typography>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          <strong>{usersData.filter(u => u.role === 'Admin').length}</strong> admins
+          <strong>{usersData.filter(u => u.role === 'مدير').length}</strong> مدير
         </Typography>
       </Box>
     </Box>

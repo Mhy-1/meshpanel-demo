@@ -42,17 +42,46 @@ const AuditLogsPage = () => {
     }
   };
 
+  const getSeverityLabel = (severity) => {
+    switch (severity) {
+      case 'error':
+        return 'خطأ';
+      case 'warning':
+        return 'تحذير';
+      case 'info':
+        return 'معلومات';
+      default:
+        return severity;
+    }
+  };
+
+  const getActionLabel = (action) => {
+    const actionLabels = {
+      'user_login': 'تسجيل دخول',
+      'user_logout': 'تسجيل خروج',
+      'create_project': 'إنشاء مشروع',
+      'update_profile': 'تحديث الملف الشخصي',
+      'delete_item': 'حذف عنصر',
+      'change_settings': 'تغيير الإعدادات',
+      'failed_login': 'فشل تسجيل الدخول',
+      'rate_limit_exceeded': 'تجاوز حد المحاولات',
+      'password_change': 'تغيير كلمة المرور',
+      'export_data': 'تصدير البيانات',
+    };
+    return actionLabels[action] || action.replace(/_/g, ' ');
+  };
+
   const getActionColor = (action) => {
     if (action.includes('create')) return { bg: 'success.light', color: 'success.dark' };
     if (action.includes('delete')) return { bg: 'error.light', color: 'error.dark' };
     if (action.includes('update') || action.includes('change')) return { bg: 'primary.light', color: 'primary.dark' };
-    if (action.includes('login')) return { bg: 'info.light', color: 'info.dark' };
+    if (action.includes('login') && !action.includes('failed')) return { bg: 'info.light', color: 'info.dark' };
     if (action.includes('failed') || action.includes('rate_limit')) return { bg: 'warning.light', color: 'warning.dark' };
     return { bg: 'action.selected', color: 'text.secondary' };
   };
 
   const formatTimestamp = (date) => {
-    return date.toLocaleString('en-US', {
+    return date.toLocaleString('ar-SA', {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
@@ -72,20 +101,34 @@ const AuditLogsPage = () => {
     return matchesSearch && matchesSeverity;
   });
 
+  const severityMenuLabels = {
+    'all': 'جميع المستويات',
+    'info': 'معلومات',
+    'warning': 'تحذير',
+    'error': 'خطأ',
+  };
+
   return (
     <Box>
       {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: { xs: 'flex-start', sm: 'center' },
+        flexDirection: { xs: 'column', sm: 'row' },
+        gap: 2,
+        mb: 4
+      }}>
         <Box>
-          <Typography variant="h4" sx={{ fontWeight: 700, color: 'text.primary' }}>
-            Audit Logs
+          <Typography variant="h4" sx={{ fontWeight: 700, color: 'text.primary', fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>
+            سجل المراجعة
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
-            Track all system activities and security events
+            تتبع جميع أنشطة النظام والأحداث الأمنية
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <Tooltip title="Refresh">
+        <Box sx={{ display: 'flex', gap: 1, width: { xs: '100%', sm: 'auto' }, justifyContent: { xs: 'flex-start', sm: 'flex-end' } }}>
+          <Tooltip title="تحديث">
             <IconButton sx={{ border: '1px solid', borderColor: 'divider' }}>
               <RefreshIcon fontSize="small" />
             </IconButton>
@@ -95,15 +138,15 @@ const AuditLogsPage = () => {
             startIcon={<DownloadIcon />}
             sx={{ textTransform: 'none' }}
           >
-            Export
+            تصدير
           </Button>
         </Box>
       </Box>
 
       {/* Filters & Search */}
-      <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 3 }}>
         <TextField
-          placeholder="Search logs..."
+          placeholder="البحث في السجلات..."
           size="small"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -114,7 +157,7 @@ const AuditLogsPage = () => {
               </InputAdornment>
             ),
           }}
-          sx={{ width: 300 }}
+          sx={{ width: { xs: '100%', sm: 300 } }}
         />
         <Button
           variant={selectedSeverity !== 'all' ? 'contained' : 'outlined'}
@@ -122,7 +165,7 @@ const AuditLogsPage = () => {
           onClick={(e) => setFilterAnchor(e.currentTarget)}
           sx={{ textTransform: 'none' }}
         >
-          {selectedSeverity === 'all' ? 'All Severities' : selectedSeverity.charAt(0).toUpperCase() + selectedSeverity.slice(1)}
+          {severityMenuLabels[selectedSeverity]}
         </Button>
         <Menu
           anchorEl={filterAnchor}
@@ -138,24 +181,28 @@ const AuditLogsPage = () => {
               }}
               selected={selectedSeverity === severity}
             >
-              {severity === 'all' ? 'All Severities' : severity.charAt(0).toUpperCase() + severity.slice(1)}
+              {severityMenuLabels[severity]}
             </MenuItem>
           ))}
         </Menu>
       </Box>
 
       {/* Summary Cards */}
-      <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+      <Box sx={{
+        display: 'grid',
+        gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(4, 1fr)' },
+        gap: 2,
+        mb: 3
+      }}>
         {[
-          { label: 'Total Events', value: auditLogs.length, color: 'primary' },
-          { label: 'Errors', value: auditLogs.filter(l => l.severity === 'error').length, color: 'error' },
-          { label: 'Warnings', value: auditLogs.filter(l => l.severity === 'warning').length, color: 'warning' },
-          { label: 'Info', value: auditLogs.filter(l => l.severity === 'info').length, color: 'info' },
+          { label: 'إجمالي الأحداث', value: auditLogs.length, color: 'primary' },
+          { label: 'الأخطاء', value: auditLogs.filter(l => l.severity === 'error').length, color: 'error' },
+          { label: 'التحذيرات', value: auditLogs.filter(l => l.severity === 'warning').length, color: 'warning' },
+          { label: 'معلومات', value: auditLogs.filter(l => l.severity === 'info').length, color: 'info' },
         ].map((item) => (
           <Card
             key={item.label}
             sx={{
-              flex: 1,
               p: 2,
               borderRadius: 2,
               border: '1px solid',
@@ -166,7 +213,7 @@ const AuditLogsPage = () => {
             <Typography variant="caption" sx={{ color: 'text.secondary' }}>
               {item.label}
             </Typography>
-            <Typography variant="h5" sx={{ fontWeight: 700, color: `${item.color}.main` }}>
+            <Typography variant="h5" sx={{ fontWeight: 700, color: `${item.color}.main`, fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
               {item.value}
             </Typography>
           </Card>
@@ -183,16 +230,16 @@ const AuditLogsPage = () => {
         }}
       >
         <TableContainer>
-          <Table>
+          <Table aria-label="سجل المراجعة">
             <TableHead>
               <TableRow>
                 <TableCell sx={{ fontWeight: 600, color: 'text.secondary', width: 50 }}></TableCell>
-                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>Timestamp</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>Action</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>User</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>Resource</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>Details</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>Severity</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>الوقت</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>الإجراء</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>المستخدم</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>المورد</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>التفاصيل</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>المستوى</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -217,14 +264,13 @@ const AuditLogsPage = () => {
                     </TableCell>
                     <TableCell>
                       <Chip
-                        label={log.action.replace(/_/g, ' ')}
+                        label={getActionLabel(log.action)}
                         size="small"
                         sx={{
                           backgroundColor: actionColors.bg,
                           color: actionColors.color,
                           fontWeight: 500,
                           fontSize: '0.7rem',
-                          fontFamily: 'monospace',
                         }}
                       />
                     </TableCell>
@@ -262,14 +308,13 @@ const AuditLogsPage = () => {
                     </TableCell>
                     <TableCell>
                       <Chip
-                        label={log.severity}
+                        label={getSeverityLabel(log.severity)}
                         size="small"
                         sx={{
                           backgroundColor: severityColors.bg,
                           color: severityColors.color,
                           fontWeight: 500,
                           fontSize: '0.7rem',
-                          textTransform: 'capitalize',
                         }}
                       />
                     </TableCell>
@@ -284,10 +329,10 @@ const AuditLogsPage = () => {
       {/* Footer */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 3 }}>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Showing <strong>{filteredLogs.length}</strong> of <strong>{auditLogs.length}</strong> events
+          عرض <strong>{filteredLogs.length}</strong> من <strong>{auditLogs.length}</strong> حدث
         </Typography>
         <Typography variant="caption" sx={{ color: 'text.disabled' }}>
-          Demo data - Last 24 hours
+          بيانات تجريبية - آخر ٢٤ ساعة
         </Typography>
       </Box>
     </Box>

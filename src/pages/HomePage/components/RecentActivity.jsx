@@ -35,9 +35,21 @@ const RecentActivity = () => {
     return colors[type] || '#666';
   };
 
+  const getActivityTypeName = (type) => {
+    const typeNames = {
+      project: 'مشروع',
+      skill: 'مهارة',
+      message: 'رسالة',
+      experience: 'خبرة',
+      certification: 'شهادة',
+      service: 'خدمة'
+    };
+    return typeNames[type] || type;
+  };
+
   const formatTime = (timestamp) => {
     if (!timestamp || !(timestamp instanceof Date) || isNaN(timestamp.getTime())) {
-      return 'Unknown';
+      return 'غير معروف';
     }
 
     const now = new Date();
@@ -46,10 +58,10 @@ const RecentActivity = () => {
     const hours = Math.floor(diff / 3600000);
     const days = Math.floor(diff / 86400000);
 
-    if (minutes < 1) return 'Just now';
-    if (minutes < 60) return `${minutes}m ago`;
-    if (hours < 24) return `${hours}h ago`;
-    return `${days}d ago`;
+    if (minutes < 1) return 'الآن';
+    if (minutes < 60) return `منذ ${minutes} دقيقة`;
+    if (hours < 24) return `منذ ${hours} ساعة`;
+    return `منذ ${days} يوم`;
   };
 
   return (
@@ -57,10 +69,10 @@ const RecentActivity = () => {
       <CardContent>
         <Box className="recent_activity_header">
           <Typography variant="h6" className="recent_activity_title">
-            Recent Activity
+            النشاط الأخير
           </Typography>
           <Typography variant="body2" className="recent_activity_subtitle">
-            Latest changes and additions
+            آخر التغييرات والإضافات
           </Typography>
         </Box>
 
@@ -91,7 +103,7 @@ const RecentActivity = () => {
                       {activity.title}
                     </Typography>
                     <Chip
-                      label={activity.type}
+                      label={getActivityTypeName(activity.type)}
                       size="small"
                       sx={{
                         backgroundColor: `${getActivityColor(activity.type)}15`,
@@ -108,8 +120,8 @@ const RecentActivity = () => {
                     <Typography variant="caption" color="textSecondary">
                       {formatTime(activity.timestamp)}
                     </Typography>
-                    <Typography variant="caption" color="textSecondary" sx={{ ml: 1 }}>
-                      by {activity.user}
+                    <Typography variant="caption" color="textSecondary" sx={{ ms: 1 }}>
+                      بواسطة {activity.user}
                     </Typography>
                   </Box>
                 }

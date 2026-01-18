@@ -32,6 +32,19 @@ const SystemStatus = () => {
     }
   };
 
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case 'operational':
+        return 'جميع الأنظمة تعمل';
+      case 'degraded':
+        return 'تم اكتشاف مشاكل';
+      case 'down':
+        return 'متوقف';
+      default:
+        return 'غير معروف';
+    }
+  };
+
   const formatUptime = (uptime) => `${uptime.toFixed(2)}%`;
 
   return (
@@ -40,17 +53,17 @@ const SystemStatus = () => {
         <Box className="system_status_header">
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Typography variant="h6" className="system_status_title">
-              System Status
+              حالة النظام
             </Typography>
             <Chip
-              label={systemStatus.overallStatus === 'operational' ? 'All Systems Operational' : 'Issues Detected'}
+              label={getStatusLabel(systemStatus.overallStatus)}
               size="small"
               color={getStatusColor(systemStatus.overallStatus)}
               sx={{ fontWeight: 500, fontSize: '0.7rem' }}
             />
           </Box>
           <Typography variant="body2" className="system_status_subtitle">
-            {systemStatus.activeAlerts} active {systemStatus.activeAlerts === 1 ? 'alert' : 'alerts'}
+            {systemStatus.activeAlerts} {systemStatus.activeAlerts === 1 ? 'تنبيه نشط' : 'تنبيهات نشطة'}
           </Typography>
         </Box>
 
@@ -67,7 +80,7 @@ const SystemStatus = () => {
                   }
                   secondary={
                     <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                      Uptime: {formatUptime(service.uptime)} | Response: {service.responseTime}ms
+                      وقت التشغيل: {formatUptime(service.uptime)} | الاستجابة: {service.responseTime}ms
                     </Typography>
                   }
                 />
@@ -90,7 +103,7 @@ const SystemStatus = () => {
 
         <Box className="system_status_footer">
           <Typography variant="caption" sx={{ color: 'text.disabled' }}>
-            Last incident: {systemStatus.lastIncident.toLocaleDateString()}
+            آخر حادثة: {systemStatus.lastIncident.toLocaleDateString('ar-SA')}
           </Typography>
         </Box>
       </CardContent>

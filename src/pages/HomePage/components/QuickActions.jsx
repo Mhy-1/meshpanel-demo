@@ -10,25 +10,25 @@ const QuickActions = () => {
 
   const actions = [
     {
-      label: 'New Project',
+      label: 'مشروع جديد',
       icon: AddIcon,
       color: 'primary',
       onClick: () => navigate('/portfolio'),
     },
     {
-      label: 'Upload Files',
+      label: 'رفع ملفات',
       icon: UploadIcon,
       color: 'secondary',
       onClick: () => {},
     },
     {
-      label: 'Export Data',
+      label: 'تصدير البيانات',
       icon: DownloadIcon,
       color: 'success',
       onClick: () => navigate('/analytics'),
     },
     {
-      label: 'Share Report',
+      label: 'مشاركة التقرير',
       icon: ShareIcon,
       color: 'info',
       onClick: () => {},
@@ -49,7 +49,7 @@ const QuickActions = () => {
         variant="subtitle2"
         sx={{ mb: 2, color: 'text.secondary', fontWeight: 500 }}
       >
-        Quick Actions
+        إجراءات سريعة
       </Typography>
       <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
         {actions.map((action) => {

@@ -1,14 +1,19 @@
 import { Box, Typography, Chip, IconButton, Tooltip } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import { format } from 'date-fns';
 
 const WelcomeSection = () => {
-  const currentDate = format(new Date(), 'EEEE, MMMM d, yyyy');
+  const currentDate = new Date().toLocaleDateString('ar-SA', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
   const timeOfDay = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return 'morning';
-    if (hour < 17) return 'afternoon';
-    return 'evening';
+    if (hour < 12) return 'صباح الخير';
+    if (hour < 17) return 'مساء الخير';
+    return 'مساء الخير';
   };
 
   return (
@@ -31,10 +36,10 @@ const WelcomeSection = () => {
               letterSpacing: '-0.5px',
             }}
           >
-            Good {timeOfDay()}, John
+            {timeOfDay()}، مشاري
           </Typography>
           <Chip
-            label="Demo Mode"
+            label="الوضع التجريبي"
             size="small"
             sx={{
               backgroundColor: 'warning.light',
@@ -48,12 +53,12 @@ const WelcomeSection = () => {
           variant="body1"
           sx={{ color: 'text.secondary' }}
         >
-          {currentDate} - Here&apos;s your dashboard overview
+          {currentDate} - إليك نظرة عامة على لوحة التحكم
         </Typography>
       </Box>
 
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        <Tooltip title="Refresh dashboard">
+        <Tooltip title="تحديث لوحة التحكم">
           <IconButton
             size="small"
             sx={{

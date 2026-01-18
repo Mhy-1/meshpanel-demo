@@ -7,7 +7,7 @@ import {
   TrendingUp, TrendingDown, Public as GlobeIcon,
 } from '@mui/icons-material';
 import {
-  ResponsiveContainer, LineChart, Line, AreaChart, Area, XAxis, YAxis,
+  ResponsiveContainer, AreaChart, Area, XAxis, YAxis,
   CartesianGrid, Tooltip, Legend, BarChart, Bar,
 } from 'recharts';
 import { analyticsData, weeklyAnalytics, monthlyData } from '../data/mockData';
@@ -23,6 +23,13 @@ const AnalyticsPage = () => {
     '&:hover': {
       boxShadow: 2,
     },
+  };
+
+  const timeRangeLabels = {
+    '24h': '٢٤ ساعة',
+    '7d': '٧ أيام',
+    '30d': '٣٠ يوم',
+    '90d': '٩٠ يوم',
   };
 
   const MetricBox = ({ title, value, trend, trendValue, icon: Icon }) => (
@@ -49,7 +56,7 @@ const AnalyticsPage = () => {
                 {trendValue}
               </Typography>
               <Typography variant="caption" sx={{ color: 'text.disabled' }}>
-                vs last period
+                مقارنة بالفترة السابقة
               </Typography>
             </Box>
           </Box>
@@ -77,24 +84,31 @@ const AnalyticsPage = () => {
   return (
     <Box>
       {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: { xs: 'flex-start', sm: 'center' },
+        flexDirection: { xs: 'column', sm: 'row' },
+        gap: 2,
+        mb: 4
+      }}>
         <Box>
-          <Typography variant="h4" sx={{ fontWeight: 700, color: 'text.primary' }}>
-            Analytics
+          <Typography variant="h4" sx={{ fontWeight: 700, color: 'text.primary', fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>
+            التحليلات
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
-            Detailed insights and performance metrics
+            رؤى تفصيلية ومقاييس الأداء
           </Typography>
         </Box>
-        <ButtonGroup size="small">
+        <ButtonGroup size="small" sx={{ flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
           {['24h', '7d', '30d', '90d'].map((range) => (
             <Button
               key={range}
               variant={timeRange === range ? 'contained' : 'outlined'}
               onClick={() => setTimeRange(range)}
-              sx={{ textTransform: 'none' }}
+              sx={{ textTransform: 'none', minWidth: { xs: 'auto', sm: 60 } }}
             >
-              {range}
+              {timeRangeLabels[range]}
             </Button>
           ))}
         </ButtonGroup>
@@ -104,34 +118,34 @@ const AnalyticsPage = () => {
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} lg={3}>
           <MetricBox
-            title="Total Page Views"
-            value="48.2K"
+            title="إجمالي مشاهدات الصفحة"
+            value="٤٨.٢ ألف"
             trend="up"
-            trendValue="+12.5%"
+            trendValue="+١٢.٥٪"
           />
         </Grid>
         <Grid item xs={12} sm={6} lg={3}>
           <MetricBox
-            title="Unique Visitors"
-            value="12.8K"
+            title="الزوار الفريدون"
+            value="١٢.٨ ألف"
             trend="up"
-            trendValue="+8.3%"
+            trendValue="+٨.٣٪"
           />
         </Grid>
         <Grid item xs={12} sm={6} lg={3}>
           <MetricBox
-            title="Bounce Rate"
-            value="34.2%"
+            title="معدل الارتداد"
+            value="٣٤.٢٪"
             trend="down"
-            trendValue="-2.1%"
+            trendValue="-٢.١٪"
           />
         </Grid>
         <Grid item xs={12} sm={6} lg={3}>
           <MetricBox
-            title="Avg. Session"
-            value="4:12"
+            title="متوسط الجلسة"
+            value="٤:١٢"
             trend="up"
-            trendValue="+0:45"
+            trendValue="+٠:٤٥"
           />
         </Grid>
       </Grid>
@@ -143,7 +157,7 @@ const AnalyticsPage = () => {
           <Card sx={cardStyles}>
             <CardContent sx={{ p: 3 }}>
               <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary', mb: 3 }}>
-                Traffic Overview
+                نظرة عامة على حركة المرور
               </Typography>
               <ResponsiveContainer width="100%" height={300}>
                 <AreaChart data={weeklyAnalytics}>
@@ -168,7 +182,7 @@ const AnalyticsPage = () => {
                     stroke="#0176D3"
                     strokeWidth={2}
                     fill="url(#visitorsGradient)"
-                    name="Visitors"
+                    name="الزوار"
                   />
                   <Area
                     type="monotone"
@@ -176,7 +190,7 @@ const AnalyticsPage = () => {
                     stroke="#5A67D8"
                     strokeWidth={2}
                     fill="url(#pageViewsGradient)"
-                    name="Page Views"
+                    name="مشاهدات الصفحة"
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -191,7 +205,7 @@ const AnalyticsPage = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
                 <GlobeIcon sx={{ color: 'primary.main' }} />
                 <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
-                  Top Countries
+                  أعلى الدول
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -204,7 +218,7 @@ const AnalyticsPage = () => {
                       {country.name}
                     </Typography>
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {country.value.toLocaleString()}
+                      {country.value.toLocaleString('ar-SA')}
                     </Typography>
                   </Box>
                 ))}
@@ -220,7 +234,7 @@ const AnalyticsPage = () => {
           <Card sx={cardStyles}>
             <CardContent sx={{ p: 3 }}>
               <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary', mb: 3 }}>
-                Monthly Performance
+                الأداء الشهري
               </Typography>
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={monthlyData}>
@@ -229,8 +243,8 @@ const AnalyticsPage = () => {
                   <YAxis tick={{ fill: 'var(--text-tertiary)', fontSize: 12 }} />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="users" fill="#0176D3" name="New Users" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="projects" fill="#2E844A" name="Projects" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="users" fill="#0176D3" name="مستخدمون جدد" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="projects" fill="#2E844A" name="المشاريع" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -241,24 +255,24 @@ const AnalyticsPage = () => {
           <Card sx={cardStyles}>
             <CardContent sx={{ p: 3 }}>
               <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary', mb: 3 }}>
-                Conversion Funnel
+                قمع التحويل
               </Typography>
               <TableContainer>
-                <Table size="small">
+                <Table size="small" aria-label="قمع التحويل">
                   <TableHead>
                     <TableRow>
-                      <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>Stage</TableCell>
-                      <TableCell align="right" sx={{ fontWeight: 600, color: 'text.secondary' }}>Users</TableCell>
-                      <TableCell align="right" sx={{ fontWeight: 600, color: 'text.secondary' }}>Rate</TableCell>
+                      <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>المرحلة</TableCell>
+                      <TableCell align="left" sx={{ fontWeight: 600, color: 'text.secondary' }}>المستخدمون</TableCell>
+                      <TableCell align="left" sx={{ fontWeight: 600, color: 'text.secondary' }}>النسبة</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {[
-                      { stage: 'Page Visit', users: 12847, rate: '100%' },
-                      { stage: 'Engaged', users: 8234, rate: '64.1%' },
-                      { stage: 'Signed Up', users: 2156, rate: '16.8%' },
-                      { stage: 'Activated', users: 1423, rate: '11.1%' },
-                      { stage: 'Converted', users: 567, rate: '4.4%' },
+                      { stage: 'زيارة الصفحة', users: 12847, rate: '١٠٠٪' },
+                      { stage: 'متفاعل', users: 8234, rate: '٦٤.١٪' },
+                      { stage: 'مسجّل', users: 2156, rate: '١٦.٨٪' },
+                      { stage: 'مفعّل', users: 1423, rate: '١١.١٪' },
+                      { stage: 'محوّل', users: 567, rate: '٤.٤٪' },
                     ].map((row) => (
                       <TableRow key={row.stage}>
                         <TableCell>
@@ -266,12 +280,12 @@ const AnalyticsPage = () => {
                             {row.stage}
                           </Typography>
                         </TableCell>
-                        <TableCell align="right">
+                        <TableCell align="left">
                           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                            {row.users.toLocaleString()}
+                            {row.users.toLocaleString('ar-SA')}
                           </Typography>
                         </TableCell>
-                        <TableCell align="right">
+                        <TableCell align="left">
                           <Chip
                             label={row.rate}
                             size="small"

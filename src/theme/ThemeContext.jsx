@@ -2,6 +2,16 @@ import { createContext, useContext, useState, useMemo, useCallback, useEffect } 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import PropTypes from 'prop-types';
+import rtlPlugin from 'stylis-plugin-rtl';
+import { CacheProvider } from '@emotion/react';
+import createCache from '@emotion/cache';
+import { prefixer } from 'stylis';
+
+// Create RTL cache
+const cacheRtl = createCache({
+  key: 'muirtl',
+  stylisPlugins: [prefixer, rtlPlugin],
+});
 
 const ThemeContext = createContext();
 
@@ -122,9 +132,10 @@ const darkPalette = {
 };
 
 const getThemeOptions = (mode) => ({
+  direction: 'rtl',
   palette: mode === 'dark' ? darkPalette : lightPalette,
   typography: {
-    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    fontFamily: '"Cairo", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
     h1: { fontWeight: 700, fontSize: '2.5rem', lineHeight: 1.2 },
     h2: { fontWeight: 700, fontSize: '2rem', lineHeight: 1.25 },
     h3: { fontWeight: 600, fontSize: '1.75rem', lineHeight: 1.3 },
@@ -249,12 +260,14 @@ export const ThemeContextProvider = ({ children }) => {
   );
 
   return (
-    <ThemeContext.Provider value={value}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        {children}
-      </ThemeProvider>
-    </ThemeContext.Provider>
+    <CacheProvider value={cacheRtl}>
+      <ThemeContext.Provider value={value}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          {children}
+        </ThemeProvider>
+      </ThemeContext.Provider>
+    </CacheProvider>
   );
 };
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   Box, Typography, Card, CardContent, Grid, Avatar, Chip, LinearProgress,
-  Tabs, Tab, Button, IconButton, Tooltip, Divider
+  Tabs, Tab, Button
 } from '@mui/material';
 import {
   Email as EmailIcon,
@@ -16,7 +16,12 @@ import {
 import { portfolioData } from '../data/mockData';
 
 const TabPanel = ({ children, value, index }) => (
-  <div role="tabpanel" hidden={value !== index}>
+  <div
+    role="tabpanel"
+    hidden={value !== index}
+    id={`portfolio-tabpanel-${index}`}
+    aria-labelledby={`portfolio-tab-${index}`}
+  >
     {value === index && <Box sx={{ py: 3 }}>{children}</Box>}
   </div>
 );
@@ -45,64 +50,73 @@ const PortfolioPage = () => {
   return (
     <Box sx={{ maxWidth: 1200, mx: 'auto' }}>
       {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-        <Typography variant="h4" sx={{ fontWeight: 700, color: 'text.primary' }}>
-          Portfolio
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: { xs: 'flex-start', sm: 'center' },
+        flexDirection: { xs: 'column', sm: 'row' },
+        gap: 2,
+        mb: 4
+      }}>
+        <Typography variant="h4" sx={{ fontWeight: 700, color: 'text.primary', fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>
+          الملف الشخصي
         </Typography>
         <Button
           variant="outlined"
           startIcon={<EditIcon />}
-          sx={{ textTransform: 'none' }}
+          sx={{ textTransform: 'none', width: { xs: '100%', sm: 'auto' } }}
         >
-          Edit Profile
+          تعديل الملف
         </Button>
       </Box>
 
       {/* Profile Header Card */}
       <Card sx={{ ...cardStyles, mb: 3 }}>
-        <CardContent sx={{ p: 4 }}>
+        <CardContent sx={{ p: { xs: 2, sm: 4 } }}>
           <Grid container spacing={3} alignItems="center">
-            <Grid item>
+            <Grid item xs={12} sm="auto" sx={{ display: 'flex', justifyContent: { xs: 'center', sm: 'flex-start' } }}>
               <Avatar
                 sx={{
-                  width: 100,
-                  height: 100,
+                  width: { xs: 80, sm: 100 },
+                  height: { xs: 80, sm: 100 },
                   bgcolor: 'primary.main',
-                  fontSize: '2.5rem',
+                  fontSize: { xs: '2rem', sm: '2.5rem' },
                   fontWeight: 700,
                 }}
               >
                 {about.name.charAt(0)}
               </Avatar>
             </Grid>
-            <Grid item xs>
-              <Typography variant="h4" sx={{ fontWeight: 700, color: 'text.primary', mb: 0.5 }}>
-                {about.name}
-              </Typography>
-              <Typography variant="h6" sx={{ color: 'primary.main', fontWeight: 500, mb: 1 }}>
-                {about.title}
-              </Typography>
-              <Typography variant="body1" sx={{ color: 'text.secondary', mb: 2, maxWidth: 600 }}>
-                {about.bio}
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                  <LocationIcon sx={{ color: 'text.disabled', fontSize: 18 }} />
-                  <Typography variant="body2" color="text.secondary">
-                    {about.location}
-                  </Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                  <EmailIcon sx={{ color: 'text.disabled', fontSize: 18 }} />
-                  <Typography variant="body2" color="text.secondary">
-                    {about.email}
-                  </Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                  <PhoneIcon sx={{ color: 'text.disabled', fontSize: 18 }} />
-                  <Typography variant="body2" color="text.secondary">
-                    {about.phone}
-                  </Typography>
+            <Grid item xs={12} sm>
+              <Box sx={{ textAlign: { xs: 'center', sm: 'start' } }}>
+                <Typography variant="h4" sx={{ fontWeight: 700, color: 'text.primary', mb: 0.5, fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>
+                  {about.name}
+                </Typography>
+                <Typography variant="h6" sx={{ color: 'primary.main', fontWeight: 500, mb: 1, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+                  {about.title}
+                </Typography>
+                <Typography variant="body1" sx={{ color: 'text.secondary', mb: 2, maxWidth: 600 }}>
+                  {about.bio}
+                </Typography>
+                <Box sx={{ display: 'flex', gap: { xs: 2, sm: 3 }, flexWrap: 'wrap', justifyContent: { xs: 'center', sm: 'flex-start' } }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <LocationIcon sx={{ color: 'text.disabled', fontSize: 18 }} />
+                    <Typography variant="body2" color="text.secondary">
+                      {about.location}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <EmailIcon sx={{ color: 'text.disabled', fontSize: 18 }} />
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                      {about.email}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <PhoneIcon sx={{ color: 'text.disabled', fontSize: 18 }} />
+                    <Typography variant="body2" color="text.secondary" dir="ltr">
+                      {about.phone}
+                    </Typography>
+                  </Box>
                 </Box>
               </Box>
             </Grid>
@@ -112,11 +126,18 @@ const PortfolioPage = () => {
 
       {/* Tabs */}
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 0 }}>
-        <Tabs value={tabValue} onChange={handleTabChange}>
-          <Tab icon={<CodeIcon fontSize="small" />} iconPosition="start" label="Skills" />
-          <Tab icon={<ProjectIcon fontSize="small" />} iconPosition="start" label="Projects" />
-          <Tab icon={<WorkIcon fontSize="small" />} iconPosition="start" label="Experience" />
-          <Tab icon={<SchoolIcon fontSize="small" />} iconPosition="start" label="Certifications" />
+        <Tabs
+          value={tabValue}
+          onChange={handleTabChange}
+          variant="scrollable"
+          scrollButtons="auto"
+          allowScrollButtonsMobile
+          aria-label="أقسام الملف الشخصي"
+        >
+          <Tab id="portfolio-tab-0" aria-controls="portfolio-tabpanel-0" icon={<CodeIcon fontSize="small" />} iconPosition="start" label="المهارات" sx={{ minWidth: 'auto' }} />
+          <Tab id="portfolio-tab-1" aria-controls="portfolio-tabpanel-1" icon={<ProjectIcon fontSize="small" />} iconPosition="start" label="المشاريع" sx={{ minWidth: 'auto' }} />
+          <Tab id="portfolio-tab-2" aria-controls="portfolio-tabpanel-2" icon={<WorkIcon fontSize="small" />} iconPosition="start" label="الخبرة" sx={{ minWidth: 'auto' }} />
+          <Tab id="portfolio-tab-3" aria-controls="portfolio-tabpanel-3" icon={<SchoolIcon fontSize="small" />} iconPosition="start" label="الشهادات" sx={{ minWidth: 'auto' }} />
         </Tabs>
       </Box>
 
@@ -180,7 +201,7 @@ const PortfolioPage = () => {
                     </Typography>
                     {project.featured && (
                       <Chip
-                        label="Featured"
+                        label="مميز"
                         size="small"
                         color="primary"
                         sx={{ fontWeight: 500 }}

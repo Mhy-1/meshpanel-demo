@@ -85,9 +85,9 @@ const PublicAnalytics = () => {
       return `${mins}:${secs.toString().padStart(2, '0')}`;
     }
     if (type === 'number' && value >= 1000) {
-      return `${(value / 1000).toFixed(1)}K`;
+      return `${(value / 1000).toFixed(1)}ألف`;
     }
-    return value.toLocaleString();
+    return value.toLocaleString('ar-SA');
   };
 
   const cardStyles = {
@@ -103,19 +103,19 @@ const PublicAnalytics = () => {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Box>
           <Typography variant="h5" sx={{ fontWeight: 600, color: 'text.primary' }}>
-            Analytics Overview
+            نظرة عامة على التحليلات
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Real-time insights and performance metrics
+            إحصائيات ومؤشرات الأداء في الوقت الفعلي
           </Typography>
         </Box>
 
         <Box sx={{ display: 'flex', gap: 1 }}>
           <ButtonGroup size="small">
             {[
-              { value: 'bar', Icon: BarChartIcon, tooltip: 'Bar Chart' },
-              { value: 'pie', Icon: PieChartRounded, tooltip: 'Pie Chart' },
-              { value: 'line', Icon: TimelineRounded, tooltip: 'Line Chart' },
+              { value: 'bar', Icon: BarChartIcon, tooltip: 'رسم بياني شريطي' },
+              { value: 'pie', Icon: PieChartRounded, tooltip: 'رسم دائري' },
+              { value: 'line', Icon: TimelineRounded, tooltip: 'رسم خطي' },
             ].map(({ value, Icon, tooltip }) => (
               <MuiTooltip key={value} title={tooltip}>
                 <IconButton
@@ -135,7 +135,7 @@ const PublicAnalytics = () => {
               </MuiTooltip>
             ))}
           </ButtonGroup>
-          <MuiTooltip title="Refresh Data">
+          <MuiTooltip title="تحديث البيانات">
             <IconButton size="small" sx={{ border: '1px solid', borderColor: 'divider' }}>
               <RefreshRounded fontSize="small" />
             </IconButton>
@@ -147,42 +147,42 @@ const PublicAnalytics = () => {
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6} lg={3}>
           <MetricCard
-            title="Total Visitors"
+            title="إجمالي الزوار"
             value={formatValue(analyticsData.visitors.total, 'number')}
             icon={PeopleOutline}
             trend="up"
-            trendLabel={`${analyticsData.visitors.percentNew.toFixed(1)}% new`}
-            subtitle={`${analyticsData.visitors.active} active`}
+            trendLabel={`${analyticsData.visitors.percentNew.toFixed(1)}% جدد`}
+            subtitle={`${analyticsData.visitors.active} نشط`}
           />
         </Grid>
         <Grid item xs={12} sm={6} lg={3}>
           <MetricCard
-            title="Avg. Reading Time"
+            title="متوسط وقت القراءة"
             value={formatValue(analyticsData.reading.avgTime, 'time')}
             icon={Timer}
             trend="up"
-            trendLabel={`${analyticsData.reading.readRate}% rate`}
-            subtitle={`Peak: ${analyticsData.visitors.peakHour}`}
+            trendLabel={`${analyticsData.reading.readRate}% معدل`}
+            subtitle={`الذروة: ${analyticsData.visitors.peakHour}`}
           />
         </Grid>
         <Grid item xs={12} sm={6} lg={3}>
           <MetricCard
-            title="Interactions"
+            title="التفاعلات"
             value={formatValue(analyticsData.interactions.clicks + analyticsData.interactions.scrolls, 'number')}
             icon={TouchApp}
             trend="up"
-            trendLabel={`${analyticsData.interactions.clicks} clicks`}
-            subtitle={`${analyticsData.interactions.scrolls} scrolls`}
+            trendLabel={`${analyticsData.interactions.clicks} نقرة`}
+            subtitle={`${analyticsData.interactions.scrolls} تمرير`}
           />
         </Grid>
         <Grid item xs={12} sm={6} lg={3}>
           <MetricCard
-            title="Devices"
-            value={analyticsData.devices.reduce((sum, d) => sum + d.value, 0).toLocaleString()}
+            title="الأجهزة"
+            value={analyticsData.devices.reduce((sum, d) => sum + d.value, 0).toLocaleString('ar-SA')}
             icon={TrendingUp}
             trend="neutral"
-            trendLabel={`${analyticsData.deviceTypes.mobile > analyticsData.deviceTypes.desktop ? 'Mobile' : 'Desktop'} dominant`}
-            subtitle={`${analyticsData.browsers.length} browsers`}
+            trendLabel={`${analyticsData.deviceTypes.mobile > analyticsData.deviceTypes.desktop ? 'الجوال' : 'سطح المكتب'} الأكثر`}
+            subtitle={`${analyticsData.browsers.length} متصفحات`}
           />
         </Grid>
 
@@ -192,10 +192,10 @@ const PublicAnalytics = () => {
             <CardContent sx={{ p: 3 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                 <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
-                  Activity Timeline
+                  الجدول الزمني للنشاط
                 </Typography>
                 <Chip
-                  label="Live"
+                  label="مباشر"
                   size="small"
                   sx={{
                     backgroundColor: 'success.light',
@@ -234,7 +234,7 @@ const PublicAnalytics = () => {
           <Card sx={{ ...cardStyles, height: '100%' }}>
             <CardContent sx={{ p: 3 }}>
               <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary', mb: 3 }}>
-                Device Distribution
+                توزيع الأجهزة
               </Typography>
               <ResponsiveContainer width="100%" height={300}>
                 {visualType === 'pie' ? (
@@ -276,7 +276,7 @@ const PublicAnalytics = () => {
           <Card sx={{ ...cardStyles, height: '100%' }}>
             <CardContent sx={{ p: 3 }}>
               <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary', mb: 3 }}>
-                Browser Distribution
+                توزيع المتصفحات
               </Typography>
               <ResponsiveContainer width="100%" height={300}>
                 {visualType === 'pie' ? (
