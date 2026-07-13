@@ -17,11 +17,11 @@ const StatCardSkeleton = () => (
   <Card className="stat_card">
     <CardContent sx={{ p: 2.5, '&:last-child': { pb: 2.5 } }}>
       <Box className="stat_header">
-        <Box className="stat_info">
-          <Skeleton variant="rounded" width={40} height={40} />
-          <Skeleton variant="text" width={60} height={24} />
+        <Skeleton variant="rounded" width={40} height={40} sx={{ flexShrink: 0 }} />
+        <Box sx={{ minWidth: 0, flex: 1 }}>
+          <Skeleton variant="text" width={40} height={32} />
+          <Skeleton variant="text" width={70} height={20} />
         </Box>
-        <Skeleton variant="text" width={40} height={40} />
       </Box>
     </CardContent>
   </Card>
@@ -31,26 +31,24 @@ const StatCard = ({ title, count, icon: Icon, color, bgColor }) => (
   <Card className="stat_card">
     <CardContent sx={{ p: 2.5, '&:last-child': { pb: 2.5 } }}>
       <Box className="stat_header">
-        <Box className="stat_info">
-          <Box
-            className="stat_icon_wrapper"
-            sx={{
-              backgroundColor: bgColor,
-              color: color,
-            }}
-          >
-            <Icon className="stat_icon" sx={{ color: color }} />
-          </Box>
-          <Typography className="stat_title">
+        <Box
+          className="stat_icon_wrapper"
+          sx={{
+            backgroundColor: bgColor,
+            color: color,
+            flexShrink: 0,
+          }}
+        >
+          <Icon className="stat_icon" sx={{ color: color }} />
+        </Box>
+        <Box sx={{ minWidth: 0 }}>
+          <Typography className="stat_count" sx={{ color: color }}>
+            {count}
+          </Typography>
+          <Typography className="stat_title" noWrap>
             {title}
           </Typography>
         </Box>
-        <Typography
-          className="stat_count"
-          sx={{ color: color }}
-        >
-          {count}
-        </Typography>
       </Box>
     </CardContent>
   </Card>
@@ -128,18 +126,18 @@ const SiteStats = () => {
         </Box>
       </Box>
 
-      <Grid container spacing={0} className="stats_grid" sx={{ width: '100%', margin: 0 }}>
+      <Grid container spacing={2} sx={{ width: '100%', margin: 0 }}>
         {loading ? (
           // Loading skeletons
           statsConfig.map((stat) => (
-            <Grid item xs={6} sm={4} md={4} key={stat.key} sx={{ padding: 0 }}>
+            <Grid item xs={6} sm={4} md={4} key={stat.key}>
               <StatCardSkeleton />
             </Grid>
           ))
         ) : stats ? (
           // Data loaded
           statsConfig.map((stat) => (
-            <Grid item xs={6} sm={4} md={4} key={stat.key} sx={{ padding: 0 }}>
+            <Grid item xs={6} sm={4} md={4} key={stat.key}>
               <StatCard
                 title={stat.title}
                 count={stats[stat.key]}
