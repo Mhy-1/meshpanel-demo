@@ -73,6 +73,8 @@ const SystemStatus = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flex: 1 }}>
                 {getStatusIcon(service.status)}
                 <ListItemText
+                  primaryTypographyProps={{ component: 'div' }}
+                  secondaryTypographyProps={{ component: 'div' }}
                   primary={
                     <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.primary' }}>
                       {service.name}
