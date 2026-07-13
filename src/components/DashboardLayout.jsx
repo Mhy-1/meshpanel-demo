@@ -25,7 +25,7 @@ import {
 } from '@mui/material';
 import { useTheme as useMuiTheme } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PersonIcon from '@mui/icons-material/Person';
 import PeopleIcon from '@mui/icons-material/People';
@@ -52,13 +52,26 @@ const menuItems = [
 ];
 
 const DashboardLayout = () => {
-  const [drawerOpen, setDrawerOpen] = useState(true);
+  // Start expanded on desktop, closed on mobile so the drawer never
+  // covers the screen on first paint (matches the `md` breakpoint below).
+  const [drawerOpen, setDrawerOpen] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return window.innerWidth >= 900;
+  });
   const [anchorEl, setAnchorEl] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
   const muiTheme = useMuiTheme();
   const { toggleTheme, isDark } = useTheme();
   const isMobile = useMediaQuery(muiTheme.breakpoints.down('md'));
+
+  // stylis-plugin-rtl mirrors every physical `left`/`right` value MUI emits
+  // (including the Drawer's own `paperAnchorRight`/`paperAnchorLeft` classes),
+  // so passing anchor="right" for an RTL theme gets flipped straight back to
+  // the physical left. Passing the *opposite* physical value here is what
+  // actually lands the drawer on the visual right in RTL (and the visual
+  // left in LTR, if this app is ever reused for an LTR locale).
+  const drawerAnchor = muiTheme.direction === 'rtl' ? 'left' : 'right';
 
   // Demo user data
   const demoUser = {
@@ -87,7 +100,7 @@ const DashboardLayout = () => {
       {/* Sidebar */}
       <Drawer
         variant={isMobile ? 'temporary' : 'permanent'}
-        anchor="right"
+        anchor={drawerAnchor}
         open={isMobile ? drawerOpen : true}
         onClose={isMobile ? toggleDrawer : undefined}
         aria-label="Main navigation"
@@ -153,7 +166,7 @@ const DashboardLayout = () => {
               },
             }}
           >
-            {drawerOpen ? <ChevronLeftIcon /> : <MenuIcon />}
+            {drawerOpen ? <ChevronRightIcon /> : <MenuIcon />}
           </IconButton>
         </Toolbar>
 
@@ -285,12 +298,12 @@ const DashboardLayout = () => {
                       ? {
                           content: '""',
                           position: 'absolute',
-                          right: 0,
+                          insetInlineStart: 0,
                           top: '50%',
                           transform: 'translateY(-50%)',
                           width: 3,
                           height: '60%',
-                          borderRadius: '2px 0 0 2px',
+                          borderRadius: '2px',
                           backgroundColor: 'primary.main',
                         }
                       : {},
@@ -424,7 +437,7 @@ const DashboardLayout = () => {
           size="small"
           sx={{
             position: 'fixed',
-            left: 16,
+            insetInlineStart: 16,
             top: 16,
             zIndex: 1200,
             boxShadow: 3,
@@ -447,6 +460,7 @@ const DashboardLayout = () => {
         aria-label="المحتوى الرئيسي"
         sx={{
           flexGrow: 1,
+          minWidth: 0,
           display: 'flex',
           flexDirection: 'column',
           width: { md: `calc(100% - ${currentWidth}px)` },
@@ -458,7 +472,7 @@ const DashboardLayout = () => {
           },
         }}
       >
-        <Box sx={{ flexGrow: 1, p: 3 }}>
+        <Box sx={{ flexGrow: 1, minWidth: 0, p: 3 }}>
           <Outlet />
         </Box>
         <Footer />
